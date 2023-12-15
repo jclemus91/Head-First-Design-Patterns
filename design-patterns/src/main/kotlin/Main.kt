@@ -7,11 +7,17 @@ import chapter2.ForecastDisplay
 import chapter2.StatisticsDisplay
 import chapter2.WeatherData
 import chapter3.*
+import chapter6.command.*
+import chapter6.invoker.RemoteControl
+import chapter6.receiver.CeilingFan
+import chapter6.receiver.Light
+import chapter6.receiver.Stereo
 
 fun main(args: Array<String>) {
     // strategy()
     // observer()
-    decorator()
+    // decorator()
+    command()
 }
 
 private fun strategy() {
@@ -57,6 +63,63 @@ private fun decorator() {
     beverage3 = Mocha(beverage3)
     beverage3 = Whip(beverage3)
     println("${beverage3.description} $${beverage3.cost()}")
+}
+
+private fun command() {
+    val livingRoomLight = Light("Living Room")
+    val kitchenLight = Light("Kitchen Light")
+    val stereo = Stereo("Living Room")
+    val ceilingFan = CeilingFan("Living Room")
+
+    val livingRoomLightOn = LightOnCommand(livingRoomLight)
+    val livingRoomLightOff = LightOffCommand(livingRoomLight)
+
+    val kitchenLightOn = LightOnCommand(kitchenLight)
+    val kitchenLightOff = LightOffCommand(kitchenLight)
+
+    val stereoOnWithCD = StereoOnWithCDCommand(stereo)
+    val stereoOff = StereoOffCommand(stereo)
+
+    val ceilingFanHighCommand = CeilingFanHighCommand(ceilingFan)
+    val ceilingFanOffCommand = CeilingFanOffCommand(ceilingFan)
+
+    val partyOnMacro = MacroCommand(arrayOf(livingRoomLightOn, kitchenLightOn, stereoOnWithCD, ceilingFanHighCommand))
+    val partyOffMacro = MacroCommand(arrayOf(livingRoomLightOff, kitchenLightOff, stereoOff, ceilingFanOffCommand))
+
+    val remoteControl = RemoteControl()
+
+    remoteControl.setCommand(0, livingRoomLightOn, livingRoomLightOff)
+    remoteControl.setCommand(1, kitchenLightOn, kitchenLightOff)
+    remoteControl.setCommand(2, stereoOnWithCD, stereoOff)
+    remoteControl.setCommand(3, ceilingFanHighCommand, ceilingFanOffCommand)
+    remoteControl.setCommand(4, partyOnMacro, partyOffMacro)
+
+    println(remoteControl)
+
+    remoteControl.onButtonWasPushed(0)
+    remoteControl.offButtonWasPushed(0)
+    remoteControl.undoButtonWasPushed()
+    println(remoteControl)
+
+    remoteControl.onButtonWasPushed(1)
+    remoteControl.offButtonWasPushed(1)
+    remoteControl.undoButtonWasPushed()
+    println(remoteControl)
+
+    remoteControl.onButtonWasPushed(2)
+    remoteControl.offButtonWasPushed(2)
+    remoteControl.undoButtonWasPushed()
+    println(remoteControl)
+
+    remoteControl.onButtonWasPushed(3)
+    remoteControl.offButtonWasPushed(3)
+    remoteControl.undoButtonWasPushed()
+    println(remoteControl)
+
+    remoteControl.onButtonWasPushed(4)
+    remoteControl.offButtonWasPushed(4)
+    remoteControl.undoButtonWasPushed()
+    println(remoteControl)
 }
 
 
